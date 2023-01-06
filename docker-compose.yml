@@ -1,0 +1,38 @@
+version: "3.9"
+
+networks:
+  db:
+    name: db
+  app:
+    name: app
+
+services:
+  mongo-db:
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pwd
+      MONGO_INITDB_DATABASE: test-data
+    networks:
+      - db
+
+  django-server:
+    build: ./app
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - MONGO_ENGINE=mongodb
+      - MONGO_HOST=mongo-db
+      - MONGO_PORT=27017
+      - MONGO_USER=root
+      - MONGO_PASSWORD=pwd
+      - MONGO_DATABASE=test-data
+    depends_on:
+      - mongo-db
+    networks:
+      - db
+      - app

@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  django-server-test:
+    build:
+      context: ./app
+      dockerfile: Dockerfile-test
+    volumes:
+        - ./coverage:/test-coverage
+    ports:
+      - 8080:8080
+    environment:
+        - MONGO_ENGINE=mongomock
+        - MONGO_HOST=mongo-db
+        - MONGO_PORT=27017
+        - MONGO_USER=root
+        - MONGO_PASSWORD=pwd
+        - MONGO_DATABASE=test-data
